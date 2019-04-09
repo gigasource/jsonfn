@@ -102,10 +102,12 @@
             case 'commonJs':
               const result = resolveExportModules(value._code_);
               Object.defineProperty(result, '_code_', {
-                value: value._code_
+                value: value._code_,
+                writable: true
               });
               Object.defineProperty(result, '_code_type_', {
-                value: value._code_type_
+                value: value._code_type_,
+                writable: true
               });
               return result;
           }
