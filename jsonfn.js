@@ -28,7 +28,7 @@
  *                 is converted into a Date object; otherwise, it is left as a String.
  */
 
-(function(exports) {
+(function (exports) {
   'use strict';
 
 
@@ -48,9 +48,9 @@
     return module.exports;
   }
 
-  exports.stringify = function(obj) {
+  exports.stringify = function (obj) {
 
-    return JSON.stringify(obj, function(key, value) {
+    return JSON.stringify(obj, function (key, value) {
       let fnBody;
       if (value === String) {
         return '_Schema_String';
@@ -68,20 +68,17 @@
         return '_Schema_Map';
       }
 
-      if (value instanceof Function || typeof value == 'function') {
-        if (value.hasOwnProperty('_code_')) {
-          fnBody = { _code_: value['_code_'], _code_type_: value['_code_type_'] && 'commonJs' };
-          return fnBody;
-        } else {
-          fnBody = value.toString();
-          if (fnBody.length < 8 || fnBody.substring(0, 8) !== 'function') { //this is ES6 Arrow Function
-            return '_NuFrRa_' + fnBody;
-          }
-          return fnBody;
+      if (value && value.hasOwnProperty('_code_')) {
+        fnBody = {_code_: value['_code_'], _code_type_: value['_code_type_'] && 'commonJs'};
+        return fnBody;
+      } else if (value && (value instanceof Function || typeof value == 'function')) {
+        fnBody = value.toString();
+        if (fnBody.length < 8 || fnBody.substring(0, 8) !== 'function') { //this is ES6 Arrow Function
+          return '_NuFrRa_' + fnBody;
         }
-
-
+        return fnBody;
       }
+
       if (value instanceof RegExp) {
         return '_PxEgEr_' + value;
       }
@@ -89,11 +86,11 @@
     });
   };
 
-  exports.parse = function(str, date2obj, codeSupport) {
+  exports.parse = function (str, date2obj, codeSupport) {
 
     const iso8061 = date2obj ? /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/ : false;
 
-    return JSON.parse(str, function(key, value) {
+    return JSON.parse(str, function (key, value) {
       let prefix;
 
       if (codeSupport) {
@@ -163,7 +160,7 @@
     });
   };
 
-  exports.clone = function(obj, date2obj, codeSupport) {
+  exports.clone = function (obj, date2obj, codeSupport) {
     return exports.parse(exports.stringify(obj), date2obj, codeSupport);
   };
 
