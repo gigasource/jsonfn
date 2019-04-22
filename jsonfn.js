@@ -48,6 +48,12 @@
     return module.exports;
   }
 
+  let codeResolveExtend;
+
+  exports.setCodeResolveExtend = function (fn) {
+    codeResolveExtend = fn;
+  }
+
   exports.stringify = function (obj) {
 
     return JSON.stringify(obj, function (key, value) {
@@ -69,7 +75,7 @@
       }
 
       if (value && value.hasOwnProperty('_code_')) {
-        fnBody = {_code_: value['_code_'], _code_type_: value['_code_type_'] && 'commonJs'};
+        fnBody = {_code_: value['_code_'], _code_type_: value['_code_type_'] || 'commonJs'};
         return fnBody;
       } else if (value && (value instanceof Function || typeof value == 'function')) {
         fnBody = value.toString();
@@ -107,6 +113,22 @@
                 writable: true
               });
               return result;
+          }
+          if (codeResolveExtend) {
+            const result = codeResolveExtend(value)
+            if (result) {
+              Object.defineProperty(result, '_code_', {
+                value: value._code_,
+                writable: true
+              });
+              Object.defineProperty(result, '_code_type_', {
+                value: value._code_type_,
+                writable: true
+              });
+
+              return result;
+            }
+
           }
         }
       }
