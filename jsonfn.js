@@ -33,7 +33,7 @@
 
 
   function resolveRequireModules(module) {
-    return window[module];
+    return window ? window[module] : null;
   }
 
   function resolveExportModules(fn) {
@@ -75,7 +75,7 @@
       }
 
       if (value && value.hasOwnProperty('_code_')) {
-        fnBody = {_code_: value['_code_'], _code_type_: value['_code_type_'] || 'commonJs'};
+        fnBody = { _code_: value['_code_'], _code_type_: value['_code_type_'] || 'commonJs' };
         return fnBody;
       } else if (value && (value instanceof Function || typeof value == 'function')) {
         fnBody = value.toString();
