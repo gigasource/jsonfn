@@ -41,7 +41,11 @@
       exports: {}
     };
     try {
-      Function('module', 'require', 'exports', fn).call(module.exports, module, resolveRequireModules, module.exports);
+      if (typeof window === 'undefined') {
+        Function('module', 'require', 'exports', fn).call(module.exports, module, require, module.exports);
+      } else {
+        Function('module', 'require', 'exports', fn).call(module.exports, module, resolveRequireModules, module.exports);
+      }
     } catch (e) {
       console.warn(e)
     }
