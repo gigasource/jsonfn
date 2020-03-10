@@ -79,7 +79,8 @@
       }
 
       if (value && value.hasOwnProperty('_code_')) {
-        fnBody = { _code_: value['_code_'], _code_type_: value['_code_type_'] || 'commonJs' };
+        fnBody = { _code_: value['_code_'], _code_type_: value['_code_type_'] || 'commonJs'};
+        if (value['_metadata_']) fnBody['_metadata_'] = value['_metadata_'];
         return fnBody;
       } else if (value && (value instanceof Function || typeof value == 'function')) {
         fnBody = value.toString();
@@ -116,6 +117,10 @@
                 value: value._code_type_,
                 writable: true
               });
+              Object.defineProperty(result, '_metadata_', {
+                value: value._metadata_,
+                writable: true
+              });
               return result;
           }
           if (codeResolveExtend) {
@@ -127,6 +132,10 @@
               });
               Object.defineProperty(result, '_code_type_', {
                 value: value._code_type_,
+                writable: true
+              });
+              Object.defineProperty(result, '_metadata_', {
+                value: value._metadata_,
                 writable: true
               });
 
