@@ -70,9 +70,9 @@
         return '_Schema_Boolean';
       } else if (value === Date) {
         return '_Schema_Date';
-      } else if (value === Buffer) {
+      } /* else if (value === Buffer) {
         return '_Schema_Buffer';
-      } else if (value === Array) {
+      } */ else if (value === Array) {
         return '_Schema_Array';
       } else if (value === Map) {
         return '_Schema_Map';
