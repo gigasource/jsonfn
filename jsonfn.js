@@ -57,7 +57,10 @@
   exports.setCodeResolveExtend = function (fn) {
     codeResolveExtend = fn;
   }
-
+  let handlers = [];
+  exports.addHandler = function (testStringify, testParse, stringify, parse) {
+    handlers.push({testStringify, testParse, stringify, parse});
+  }
   exports.stringify = function (obj) {
 
     return JSON.stringify(obj, function (key, value) {
@@ -77,7 +80,11 @@
       } else if (value === Map) {
         return '_Schema_Map';
       }
-
+      for (const handler of handlers) {
+        if (handler.testStringify(key, this[key])) {
+          return handler.stringify(key, this[key]);
+        }
+      }
       if (value && value.hasOwnProperty('_code_')) {
         fnBody = { _code_: value['_code_'], _code_type_: value['_code_type_'] || 'commonJs'};
         if (value['_metadata_']) fnBody['_metadata_'] = value['_metadata_'];
@@ -138,23 +145,18 @@
                 value: value._metadata_,
                 writable: true
               });
-
               return result;
             }
-
           }
         }
       }
-
       if (typeof value != 'string') {
         return value;
       }
       if (value.length < 8) {
         return value;
       }
-
       prefix = value.substring(0, 8);
-
       if (iso8061 && value.match(iso8061)) {
         return new Date(value);
       }
@@ -190,7 +192,11 @@
           return Map;
         }
       }
-
+      for (const handler of handlers) {
+        if (handler.testParse(key, value)) {
+          return handler.parse(key, value);
+        }
+      }
       return value;
     });
   };
