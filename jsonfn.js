@@ -104,7 +104,7 @@
     });
   };
 
-  exports.parse = function (str, date2obj, codeSupport) {
+  exports.parse = function (str, date2obj = true, codeSupport) {
 
     const iso8061 = date2obj ? /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/ : false;
 
