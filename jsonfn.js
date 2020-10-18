@@ -61,7 +61,7 @@
   exports.addHandler = function (testStringify, testParse, stringify, parse) {
     handlers.push({testStringify, testParse, stringify, parse});
   }
-  exports.stringify = function (obj) {
+  exports.stringify = function (obj, cb) {
 
     return JSON.stringify(obj, function (key, value) {
       let fnBody;
@@ -100,11 +100,14 @@
       if (value instanceof RegExp) {
         return '_PxEgEr_' + value;
       }
+      if (cb) {
+        return cb(key, value);
+      }
       return value;
     });
   };
 
-  exports.parse = function (str, date2obj, codeSupport) {
+  exports.parse = function (str, date2obj, codeSupport, cb) {
 
     const iso8061 = date2obj ? /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/ : false;
 
@@ -196,6 +199,9 @@
         if (handler.testParse(key, value)) {
           return handler.parse(key, value);
         }
+      }
+      if (cb) {
+        return cb(key, value);
       }
       return value;
     });
