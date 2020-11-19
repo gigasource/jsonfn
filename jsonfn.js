@@ -65,7 +65,9 @@
 
     return JSON.stringify(obj, function (key, value) {
       let fnBody;
-      if (value === String) {
+      if (value === undefined) {
+        return null;
+      } if (value === String) {
         return '_Schema_String';
       } else if (value === Number) {
         return '_Schema_Number';
