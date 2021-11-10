@@ -66,7 +66,7 @@
     return JSON.stringify(obj, function (key, value) {
       let fnBody;
       if (value === undefined) {
-        return null;
+        return undefined;
       } if (value === String) {
         return '_Schema_String';
       } else if (value === Number) {
@@ -123,6 +123,7 @@
         if (typeof value === 'object' && Object.prototype.toString.call(value) === '[object Object]' && value.hasOwnProperty('_code_')) {
           switch (value._code_type_) {
             case 'commonJs':
+              if (value._code_ === '') return null;
               const result = resolveExportModules(value._code_);
               Object.defineProperty(result, '_code_', {
                 value: value._code_,
