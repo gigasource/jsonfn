@@ -66,7 +66,7 @@
     return JSON.stringify(obj, function (key, value) {
       let fnBody;
       if (value === undefined) {
-        return undefined;
+        return null;
       } if (value === String) {
         return '_Schema_String';
       } else if (value === Number) {
@@ -102,6 +102,9 @@
       if (value instanceof RegExp) {
         return '_PxEgEr_' + value;
       }
+      if (value && value.type === 'Buffer' && value.data) {
+        return '_Buffer_' + Buffer.from(value.data).toString('base64');
+      }
       if (cb) {
         return cb(key, value);
       }
@@ -120,7 +123,6 @@
         if (typeof value === 'object' && Object.prototype.toString.call(value) === '[object Object]' && value.hasOwnProperty('_code_')) {
           switch (value._code_type_) {
             case 'commonJs':
-              if (value._code_ === '') return null;
               const result = resolveExportModules(value._code_);
               Object.defineProperty(result, '_code_', {
                 value: value._code_,
@@ -197,6 +199,9 @@
         if (value === '_Schema_Map') {
           return Map;
         }
+      }
+      if (prefix === '_Buffer_') {
+        return Buffer.from(Buffer.from(value.slice(8), 'base64'));
       }
       for (const handler of handlers) {
         if (handler.testParse(key, value)) {
