@@ -66,7 +66,7 @@
     return JSON.stringify(obj, function (key, value) {
       let fnBody;
       if (value === undefined) {
-        return undefined;
+        return '_undefined_';
       } if (value === String) {
         return '_Schema_String';
       } else if (value === Number) {
@@ -116,7 +116,8 @@
 
     const iso8061 = date2obj ? /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*)?)Z$/ : false;
 
-    return JSON.parse(str, function (key, value) {
+    let undefinedArr = [];
+    const result = JSON.parse(str, function (key, value) {
       let prefix;
 
       if (codeSupport) {
@@ -161,6 +162,11 @@
       }
       if (typeof value != 'string') {
         return value;
+      }
+      if (value === '_undefined_') {
+        undefinedArr.push({obj: this, k: key})
+        this[key] = undefined;
+        return undefined;
       }
       if (value.length < 8) {
         return value;
@@ -214,6 +220,10 @@
       }
       return value;
     });
+    for (const {k, obj} of undefinedArr) {
+      obj[k] = undefined;
+    }
+    return result;
   };
 
   exports.clone = function (obj, date2obj, codeSupport) {
