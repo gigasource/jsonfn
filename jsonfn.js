@@ -165,7 +165,6 @@
       }
       if (value === '_undefined_') {
         undefinedArr.push({obj: this, k: key})
-        this[key] = undefined;
         return undefined;
       }
       if (value.length < 8) {
