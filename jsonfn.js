@@ -42,7 +42,7 @@
     };
     try {
       if (typeof window === 'undefined') {
-        Function('module', 'require', 'exports', fn).call(module.exports, module, require, module.exports);
+        Function('module', 'exports', fn).call(module.exports, module, module.exports);
       } else {
         Function('module', 'require', 'exports', fn).call(module.exports, module, resolveRequireModules, module.exports);
       }
